@@ -4,6 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
 import AppNavigator from './src/navigation/AppNavigator';
+import { LanguageProvider } from './src/context/LanguageContext';
 
 export default function App() {
   useEffect(() => {
@@ -13,7 +14,9 @@ export default function App() {
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
-        <AppNavigator />
+        <LanguageProvider>
+          <AppNavigator />
+        </LanguageProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

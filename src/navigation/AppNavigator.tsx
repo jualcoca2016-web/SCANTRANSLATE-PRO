@@ -13,6 +13,7 @@ import GameHubScreen from '../screens/GameHubScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import VoiceTranslateScreen from '../screens/premium/VoiceTranslateScreen';
 import ConversationScreen from '../screens/premium/ConversationScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 
 export type RootTabParamList = {
   Home: undefined;
@@ -26,6 +27,7 @@ export type RootStackParamList = {
   MainTabs: undefined;
   VoiceTranslate: undefined;
   Conversation: undefined;
+  Settings: undefined;
 };
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -105,6 +107,7 @@ export default function AppNavigator() {
         <Stack.Screen name="MainTabs" component={MainTabs} />
         <Stack.Screen name="VoiceTranslate" component={VoiceTranslateScreen} />
         <Stack.Screen name="Conversation" component={ConversationScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

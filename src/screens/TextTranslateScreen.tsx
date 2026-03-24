@@ -6,22 +6,31 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { THEME } from '../theme/constants';
 import { mockTranslationResult } from '../modules/camera/ocr.mock';
+import { useLanguage } from '../context/LanguageContext';
 import type { SupportedLanguage } from '../types/translation';
 
 const LANGUAGES: { code: SupportedLanguage; label: string; flag: string }[] = [
-  { code: 'es', label: 'Español', flag: '🇪🇸' },
-  { code: 'en', label: 'English', flag: '🇺🇸' },
-  { code: 'ja', label: '日本語', flag: '🇯🇵' },
-  { code: 'zh', label: '中文', flag: '🇨🇳' },
-  { code: 'fr', label: 'Français', flag: '🇫🇷' },
-  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'es', label: 'Español',   flag: '🇪🇸' },
+  { code: 'en', label: 'English',   flag: '🇺🇸' },
+  { code: 'ja', label: '日本語',     flag: '🇯🇵' },
+  { code: 'zh', label: '中文',       flag: '🇨🇳' },
+  { code: 'fr', label: 'Français',  flag: '🇫🇷' },
+  { code: 'de', label: 'Deutsch',   flag: '🇩🇪' },
   { code: 'pt', label: 'Português', flag: '🇧🇷' },
-  { code: 'ko', label: '한국어', flag: '🇰🇷' },
+  { code: 'ko', label: '한국어',     flag: '🇰🇷' },
+  { code: 'it', label: 'Italiano',  flag: '🇮🇹' },
+  { code: 'ru', label: 'Русский',   flag: '🇷🇺' },
 ];
 
+const LANG_LABELS: Record<SupportedLanguage, string> = {
+  es: 'Español', en: 'English', ja: '日本語', zh: '中文',
+  fr: 'Français', de: 'Deutsch', pt: 'Português', ko: '한국어',
+  it: 'Italiano', ru: 'Русский',
+};
+
 export default function TextTranslateScreen() {
+  const { targetLang, setTargetLang, lastDetectedLang } = useLanguage();
   const [inputText, setInputText] = useState('');
-  const [targetLang, setTargetLang] = useState<SupportedLanguage>('es');
   const [translatedText, setTranslatedText] = useState('');
   const [isTranslating, setIsTranslating] = useState(false);
   const [showLangPicker, setShowLangPicker] = useState(false);
@@ -61,6 +70,22 @@ export default function TextTranslateScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+
+        {/* Banner: idioma detectado por cámara */}
+        {lastDetectedLang && (
+          <TouchableOpacity
+            style={styles.detectedBanner}
+            onPress={() => setInputText('')}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.detectedBannerText}>
+              📷  Último detectado por cámara:{' '}
+              <Text style={styles.detectedBannerLang}>
+                {LANG_LABELS[lastDetectedLang] ?? lastDetectedLang.toUpperCase()}
+              </Text>
+            </Text>
+          </TouchableOpacity>
+        )}
 
         {/* Selector de idioma destino */}
         <Text style={styles.label}>Traducir al idioma:</Text>
@@ -186,6 +211,26 @@ const styles = StyleSheet.create({
     fontSize: THEME.typography.sizes.title,
     fontWeight: '700',
     color: THEME.colors.text.main,
+  },
+
+  detectedBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,255,255,0.07)',
+    borderWidth: 1,
+    borderColor: 'rgba(0,255,255,0.25)',
+    borderRadius: THEME.borders.radius.standard,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginTop: 16,
+  },
+  detectedBannerText: {
+    color: THEME.colors.text.subtle,
+    fontSize: THEME.typography.sizes.small,
+  },
+  detectedBannerLang: {
+    color: THEME.colors.primary.cyanElectric,
+    fontWeight: '700',
   },
 
   label: {

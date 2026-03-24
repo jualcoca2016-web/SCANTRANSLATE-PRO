@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { THEME } from '../theme/constants';
 import type { RootStackParamList } from '../navigation/AppNavigator';
+import { useLanguage } from '../context/LanguageContext';
 import { mockPlanLimits } from '../modules/camera/ocr.mock';
 
 type ProfileNav = NativeStackNavigationProp<RootStackParamList>;
@@ -23,6 +24,7 @@ const PREMIUM_FEATURES = [
 
 export default function ProfileScreen() {
   const navigation = useNavigation<ProfileNav>();
+  const { targetLang, nativeLang } = useLanguage();
   const [plan] = useState<'free' | 'premium'>('free');
   const FREE_PLAN = mockPlanLimits('free');
 
@@ -121,15 +123,18 @@ export default function ProfileScreen() {
         {/* Opciones de cuenta */}
         <Text style={styles.sectionTitle}>Cuenta</Text>
         {[
-          { icon: '⚙️', label: 'Configuración' },
-          { icon: '📊', label: 'Mi historial' },
-          { icon: '❓', label: 'Ayuda y soporte' },
-          { icon: '🚪', label: 'Cerrar sesión' },
+          { icon: '⚙️', label: 'Configuración', screen: 'Settings' as const },
+          { icon: '📊', label: 'Mi historial', screen: null },
+          { icon: '❓', label: 'Ayuda y soporte', screen: null },
+          { icon: '🚪', label: 'Cerrar sesión', screen: null },
         ].map((item) => (
           <TouchableOpacity
             key={item.label}
             style={styles.menuItem}
-            onPress={() => Alert.alert(item.label, 'Próximamente.')}
+            onPress={() => {
+              if (item.screen) navigation.navigate(item.screen);
+              else Alert.alert(item.label, 'Próximamente.');
+            }}
           >
             <Text style={styles.menuItemIcon}>{item.icon}</Text>
             <Text style={styles.menuItemLabel}>{item.label}</Text>
